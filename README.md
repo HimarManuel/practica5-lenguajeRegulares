@@ -1,1 +1,1 @@
-# practica5-lenguajeRegulares
+# practica5-lenguajesRegulares
