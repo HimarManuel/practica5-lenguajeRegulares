@@ -1,8 +1,7 @@
+#pragma once
+
 #include "language_t.hpp"
 #include <ctype.h>
-
-#define INF_LIMIT 50
-
 
 class calculator_t {
 private:
@@ -16,10 +15,8 @@ public:
   calculator_t (void);
   ~calculator_t (void);
 
-  void menu (void);
-
   void reverse (void);
-  void concatenation (void);
+  void concatenation (void); //ampliada para trabajar con expresiones regulares
   void join (void);
   void intersection (void);
   void difference (void);
@@ -27,7 +24,10 @@ public:
   void equal (void);
   void power (void);
   void kleene (void);
+
+  void show_result (void);
 private:
+  bool is_regular_expression (string s);
   language_t split (const string& s);
   bool is_integer (void);
   void choose1 (void);

@@ -38,7 +38,7 @@ public:
     return result;
   }
 
-  chain_t reverse (void) {
+  chain_t reverse (void) const {
     if (data() == "&") { return string(data()); }
     chain_t result;
     for (int i = size()-1; i >= 0; i--) {

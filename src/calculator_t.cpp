@@ -1,74 +1,33 @@
-#include "calculator_t.hpp"
+#include "../include/calculator_t.hpp"
 
 calculator_t::calculator_t (void) : l1_(), l2_(), input_() {}
 calculator_t::~calculator_t (void) {}
 
-void calculator_t::menu (void) {
-  int opt;
-  while (true) {
-    cout << "1. Inversa\n";
-    cout << "2. Concatenacion\n";
-    cout << "3. Union\n";
-    cout << "4. Interseccion\n";
-    cout << "5. Diferencia\n";
-    cout << "6. Sublenguajes\n";
-    cout << "7. Igualdad de lenguajes\n";
-    cout << "8. Potencia\n";
-    cout << "9. Cierre de Kleene\n";
-    cout << "\n";
-    cout << ">>> Introduzca una opcion: ";
-    cin >> opt;
-
-    switch (opt) {
-      case 1:
-        reverse();
-        break;
-      case 2:
-        concatenation();
-        break;
-      case 3:
-        join();
-        break;
-      case 4:
-        intersection();
-        break;
-      case 5:
-        difference();
-        break;
-      case 6:
-        sublanguage(); //booleano
-        break;
-      case 7:
-        equal(); //booleano
-        break;
-      case 8:
-        power();
-        break;
-      case 9:
-        kleene();
-        break;
-      deafult:
-        cerr << "ERROR. No ha seleccionado ningun valor de entre los disponibles." << "\n";
-    }
-    cout << "Resultado: ";
-    result_.write();
-    cout << "\n";
-  }
-}
-
 void calculator_t::choose2 (void) {
   cout << "Indique el primer lenguaje: ";
   cin >> input_;
-  l1_ = split(input_);
+  if (is_regular_expression(input_)) {
+    l1_ = *(new language_t (input_));
+  } else {
+    l1_ = split(input_);
+  }
   cout << "Indique el segundo lenguaje: ";
   cin >> input_;
-  l2_ = split(input_);
+  if (is_regular_expression(input_)) {
+    l2_ = *(new language_t (input_));
+  } else {
+    l2_ = split(input_);
+  }
 }
 
 void calculator_t::choose1 (void) {
   cout << "Indique un lenguaje: ";
   cin >> input_;
-  l1_ = split(input_);
+  if (is_regular_expression(input_)) {
+    l1_ = *(new language_t (input_));
+  } else {
+    l1_ = split(input_);
+  }
 }
 
 language_t calculator_t::split (const string& s) {
@@ -91,7 +50,7 @@ language_t calculator_t::split (const string& s) {
     if (aux.find('*') != string::npos) { cerr << "ERROR: El símbolo '*' no esta permitido en las cadenas del lenguaje.\n"; }
     if (aux.find('|') != string::npos) { cerr << "ERROR: El símbolo '|' no esta permitido en las cadenas del lenguaje.\n"; }
     assert(aux.find('{') == string::npos && aux.find('}') == string::npos && aux.find('*') == string::npos && aux.find('|') == string::npos);
-    if (aux->data() == '&') result.insert(string("")); else result.insert(aux);
+    if (*aux.data() == '&') result.insert_chain(""); else result.insert_chain(aux);
     init = last+1;
     last = s.find(",", init);
     if (last == string::npos) { last = s.find("}"); }
@@ -146,12 +105,12 @@ void calculator_t::power (void) {
   cin >> input_;
   assert(is_integer());
 
-  result_ = l1_.power(input_);
+  result_ = l1_.power(stoi(input_));
 }
 
 void calculator_t::kleene (void) {
   choose1();
-  result_ = l1_.power(INF_LIMIT);
+  result_ = l1_.kleene(INF_LIMIT);
 }
 
 bool calculator_t::is_integer (void) {
@@ -159,4 +118,23 @@ bool calculator_t::is_integer (void) {
     if (!isdigit(input_[i])) return false;
   }
   return true;
+}
+
+bool calculator_t::is_regular_expression (string s) {
+  if (s.find('{') == string::npos && s.find('}') == string::npos) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void calculator_t::show_result (void) {
+  if (result_.is_regular()) {
+    cout << "Expresion regular: " << result_.get_regular() << "\n";
+    cout << "Expresion desarrollada: ";
+  } else {
+    cout << "Resultado: ";
+  }
+  result_.write();
+  cout << "\n";
 }

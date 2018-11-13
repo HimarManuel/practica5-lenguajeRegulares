@@ -7,18 +7,15 @@ LDIR =../lib
 
 LIBS=-lm
 
-_OBJ = main.o
+_OBJ = main.o calculator_t.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
-all: main
+all: calculator
 
-$(ODIR)/main.o: $(ODIR)/main.cpp
+$(ODIR)/main.o: $(ODIR)/main.cpp $(ODIR)/calculator_t.cpp $(IDIR)/chain_t.hpp $(IDIR)/language_t.hpp $(IDIR)/calculator_t.hpp
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-$(ODIR)/main.o: $(ODIR)/main.cpp $(IDIR)/chain_t.hpp $(IDIR)/language_t.hpp
-	$(CC) -c -o $@ $< $(CFLAGS)
-
-main: $(OBJ)
+calculator: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean
